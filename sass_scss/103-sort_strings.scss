@@ -1,2 +1,3 @@
 $list_to_sort: john anna zoe kim felicia carrie;
-@debug #{$list_to_sort};
+$list_sorted: sort($list_to_sort);
+@debug $list_sorted;
