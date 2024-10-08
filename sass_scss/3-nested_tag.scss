@@ -1,11 +1,11 @@
-%reseter {
-    margin: 0;
-    padding: 0;
-}
+$margin_reseter: 0;
+$padding_reseter: 0;
 $margin: 10px;
 
 body {
-    @extend %reseter;
+   margin: $margin_reseter;
+   padding: $padding_reseter;
+
     p {
         margin: $margin;
     }
