@@ -1,0 +1,12 @@
+%reseter {
+    margin: 0;
+    padding: 0;
+}
+$margin: 10px;
+
+body {
+    @extend %reseter;
+    p {
+        margin: $margin;
+    }
+}
