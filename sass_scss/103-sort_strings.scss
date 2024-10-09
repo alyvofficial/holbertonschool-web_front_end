@@ -1,4 +1,28 @@
-$list_to_sort:anna carrie felicia john kim zoe;
-
-
-@debug $list_to_sort;
+@function sort-list($list) {
+    $n: length($list); // Get the length of the list
+    $sorted-list: $list; // Create a copy of the original list
+  
+    @for $i from 1 through $n - 1 {
+      @for $j from 1 through $n - $i {
+        // Get current and next list items
+        $current-item: nth($sorted-list, $j);
+        $next-item: nth($sorted-list, $j + 1);
+  
+        // Compare the items, if current item is greater, swap them
+        @if $current-item > $next-item {
+          $sorted-list: set-nth($sorted-list, $j, $next-item);
+          $sorted-list: set-nth($sorted-list, $j + 1, $current-item);
+        }
+      }
+    }
+  
+    @return $sorted-list;
+  }
+  
+  // Example usage
+  $list_to_sort: (8, 3, 5, 1, 6);
+  
+  $list_sorted: sort-list($list_to_sort);
+  
+  @debug $list_sorted; // Prints the sorted list in debug output
+  
