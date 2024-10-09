@@ -1,21 +1,2 @@
-@function sort-list($list) {
-    $list-length: length($list);
-    $sorted: false;
-  
-    @while $sorted == false {
-      $sorted: true;
-  
-      @for $i from 1 through $list-length - 1 {
-        $current-item: nth($list, $i);
-        $next-item: nth($list, $i + 1);
-  
-        @if str-insert($current-item, "", 0) > str-insert($next-item, "", 0) {
-          $list: set-nth($list, $i, $next-item);
-          $list: set-nth($list, $i + 1, $current-item);
-          $sorted: false;
-        }
-      }
-    }
-  
-    @return $list;
-  }
+$list_to_sort: anna carrie felicia john kim zoe;
+@debug $list_to_sort;
