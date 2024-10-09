@@ -1,41 +1,53 @@
-@function sort-strings($list) {
-    $n: length($list); // Get the length of the list
-    $sorted-list: $list; // Create a copy of the original list
-  
-    @for $i from 1 through $n - 1 {
-      @for $j from 1 through $n - $i {
-        // Get current and next list items
-        $current-item: nth($sorted-list, $j);
-        $next-item: nth($sorted-list, $j + 1);
-  
-        // Compare the items, if the current item is greater alphabetically, swap them
-        @if str-compare($current-item, $next-item) == 1 {
-          $sorted-list: set-nth($sorted-list, $j, $next-item);
-          $sorted-list: set-nth($sorted-list, $j + 1, $current-item);
-        }
+@import "103-sort_list";
+
+
+$default-order:
+  "a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v" "w" "x" "y" "z" !default;
+
+
+@function _str-compare($a, $b, $order) {
+  @if type-of($a) == "number" and type-of($b) == "number" {
+    @return $a < $b;
+  }
+
+  $a: to-lower-case($a);
+  $b: to-lower-case($b);
+
+  @for $i from 1 through min(str-length($a), str-length($b)) {
+    $char-a: str-slice($a, $i, $i);
+    $char-b: str-slice($b, $i, $i);
+
+    @if $char-a and $char-b and index($order, $char-a) != index($order, $char-b) {
+      @return index($order, $char-a) < index($order, $char-b);
+    }
+  }
+
+  @return str-length($a) < str-length($b);
+}
+
+
+@function quick-sort($list, $order: $default-order) {
+  $less:  ();
+  $equal: ();
+  $large: ();
+
+  @if length($list) > 1 {
+    $seed: nth($list, ceil(length($list) / 2));
+
+    @each $item in $list {
+      @if $item == $seed {
+        $equal: append($equal, $item, list-separator($list));
+      } @else if _str-compare($item, $seed, $order) {
+        $less: append($less, $item, list-separator($list));
+      } @else if not _str-compare($item, $seed, $order) {
+        $large: append($large, $item, list-separator($list));
       }
     }
-  
-    @return $sorted-list;
+
+    @return join(join(quick-sort($less, $order), $equal), quick-sort($large, $order));
   }
-  
-  // Helper function to compare strings alphabetically
-  @function str-compare($a, $b) {
-    @if $a > $b {
-      @return 1;
-    }
-    @else if $a < $b {
-      @return -1;
-    }
-    @else {
-      @return 0;
-    }
-  }
-  
-  // Example usage
-  $list_to_sort: john, anna, zoe, kim, felicia, carrie;
-  
-  $list_sorted: sort-strings($list_to_sort);
-  
-  @debug $list_sorted; // Prints the sorted list in debug output
-  
+
+  @return $list;
+}
+
+@debug quick-sort($list_to_sort);
