@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8" />
+        <title>Task 0</title>
+    </head>
+    <body>
+        <script
+            src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"
+        ></script>
+        <script type="application/javascript">
+            // Function to add a post row
+            const addPostRow = (data) => {
+                const { id, title, author } = data;
+                $("body").append(
+                    `<p id="row-${id}">
+                        <span class="delete" style="cursor: pointer; color: red;">(delete)</span>
+                        <span>Post created with id ${id}, title: ${title}, author: ${author}</span>
+                    </p>`
+                );
+
+                // Attach click event to delete span
+                $(`#row-${id} .delete`).on("click", () => deletePost(id));
+            };
+
+            // Function to delete a post
+            const deletePost = (id) => {
+                $.ajax({
+                    type: "DELETE",
+                    url: `http://localhost:3000/posts/${id}`,
+                    success: () => {
+                        $(`#row-${id}`).remove();
+                    },
+                }).fail(() => {
+                    alert("Post was not deleted");
+                });
+            };
+
+            // Function to list all posts
+            const listPosts = () => {
+                $.get("http://localhost:3000/posts", (data) => {
+                    data.forEach((e) => addPostRow(e));
+                }).fail(() => {
+                    console.log("Server Error");
+                });
+            };
+
+            // Function to build the form
+            const buildForm = () => {
+                $("body").append(`
+                    <form id="postForm">
+                        <div>
+                            <label for="author">Author</label>
+                            <input type="text" id="author" />
+                        </div>
+                        <div>
+                            <label for="title">Title</label>
+                            <textarea id="title"></textarea>
+                        </div>
+                        <input type="submit" value="Submit" />
+                    </form>
+                `);
+
+                // Attach event listener to the form's submit button
+                $("#postForm").on("submit", function (event) {
+                    event.preventDefault(); // Prevent form reload
+                    sendForm();
+                });
+
+                // Make label clickable to focus input
+                $("label").on("click", function () {
+                    const forAttr = $(this).attr("for");
+                    if (forAttr) {
+                        $(`#${forAttr}`).focus();
+                    }
+                });
+            };
+
+            // Function to send form data to the API
+            const sendForm = () => {
+                // Display message using the jQuery `after` function
+                $("form").after("<p>About to send the query to the API</p>");
+
+                // Gather data from the form inputs
+                const data = {
+                    author: $("#author").val(),
+                    title: $("#title").val(),
+                };
+
+                // Send POST request
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost:3000/posts",
+                    data: JSON.stringify(data),
+                    contentType: "application/json",
+                    success: (response) => addPostRow(response),
+                }).fail(() => {
+                    alert("Error sending the POST query");
+                });
+            };
+
+            // Initialize page with posts and form
+            $(document).ready(() => {
+                listPosts();
+                buildForm();
+            });
+        </script>
+    </body>
+</html>
