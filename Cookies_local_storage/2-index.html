@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Task 0</title>
+    <title>Task 2</title>
   </head>
   <body>
     <h1>Login to the website</h1>
@@ -15,10 +15,15 @@
 
     <script type="application/javascript">
       function setCookies() {
+        const d = new Date();
+        d.setTime(d.getTime() + 10 * 24 * 60 * 60 * 1000);
+        const expires = `expires=${d.toUTCString()}`;
         document.cookie = `firstname=${
           document.getElementById("firstname").value
-        }`;
-        document.cookie = `email=${document.getElementById("email").value}`;
+        };${expires};path=/`;
+        document.cookie = `email=${
+          document.getElementById("email").value
+        };${expires};path=/`;
       }
 
       function showCookies() {
@@ -29,7 +34,14 @@
         const email = cookies[4].split("=")[1];
 
         document.body.appendChild(paragraph);
-        paragraph.innerHTML = `Cookies: ${firstname}, ${email}`;
+        paragraph.innerHTML = paragraph.innerHTML = `Email: ${email} - Firstname: ${firstname}`;
+      }
+
+      function getCookie(name) {
+        return document.cookie
+          .split(";")
+          .find((cookie) => cookie.includes(name))
+          .split("=")[1];
       }
     </script>
   </body>

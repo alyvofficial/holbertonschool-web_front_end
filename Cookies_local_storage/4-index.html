@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 4</title>
+</head>
+<body>
+  <div id="form">
+    <h2>Login to the website</h2>
+    <input id="firstname" placeholder="Firstname" type="text">
+    <input id="email" placeholder="Email" type="text">
+    <button onclick="setCookiesAndShowWelcomeMessage()">Log me in</button>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.5/js.cookie.min.js" 
+    integrity="sha512-nlp9/l96/EpjYBx7EP7pGASVXNe80hGhYAUrjeXnu/fyF5Py0/RXav4BBNs7n5Hx1WFhOEOWSAVjGeC3oKxDVQ==" 
+    crossorigin="anonymous" 
+    referrerpolicy="no-referrer"></script>
+  <script type="application/javascript">
+
+  function setCookiesAndShowWelcomeMessage() {
+    Cookies.set('firstname', document.getElementById('firstname').value, { expires: 10, path: '/' });
+    Cookies.set('email', document.getElementById('email').value, { expires: 10, path: '/' });
+
+    showWelcomeMessageOrForm();
+  }
+
+  function showForm() {
+    const msg = document.getElementById('msg');
+    if (msg) msg.remove();
+    document.getElementById('form').style.display = 'block';
+  }
+
+  function hideForm() {
+    document.getElementById('form').style.display = 'none';
+  }
+
+  function deleteCookiesAndShowForm() {
+    Cookies.remove('firstname', { path: '/' });
+    Cookies.remove('email', { path: '/' });
+    showForm();
+  }
+
+  function showWelcomeMessageOrForm() {
+    const firstname = Cookies.get('firstname');
+    const email = Cookies.get('email');
+
+    if (!firstname || !email) {
+      showForm();
+    } else {
+      hideForm();
+      const msg = document.createElement('h1');
+      const logOut = document.createElement('a');
+      /* add text to tags */
+      msg.innerText = `Welcome ${firstname}`;
+      logOut.innerText = '(logout)';
+      /* Set the attributes */
+      msg.setAttribute('id', 'msg');
+      logOut.setAttribute('onclick', 'deleteCookiesAndShowForm()');
+      /* Styles log Out */
+      logOut.style.cursor = 'pointer';
+      logOut.style.fontWeight = 'normal';
+      logOut.style.fontStyle = 'italic';
+      logOut.style.marginLeft = '10px';
+      /* add tags to DOM */
+      msg.appendChild(logOut);
+      document.body.appendChild(msg);
+    }
+  }
+
+  </script>
+</body>
+</html>
